@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>   <!-- só para o NotifyIcon (bandeja) -->
+    <ApplicationIcon>Assets\TempBar.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <Product>TempBar</Product>
+    <Description>Barras de temperatura de CPU e GPU sempre visíveis na tela</Description>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>TempBar</AssemblyName>
+    <RootNamespace>TempBar</RootNamespace>
+    <!-- Permite rodar em PCs que só têm um .NET mais novo (ex.: 9/10) instalado -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- evita ambiguidade entre WPF e WinForms nos usings implícitos -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\TempBar.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.4" />
+  </ItemGroup>
+
+</Project>

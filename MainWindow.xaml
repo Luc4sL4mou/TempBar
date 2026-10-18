@@ -1,0 +1,53 @@
+<Window x:Class="TempBar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TempBar"
+        Title="TempBar"
+        Width="200" Height="88"
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False"
+        UseLayoutRounding="True"
+        Icon="Assets/TempBar.ico">
+
+    <!-- Fundo quase invisível (alpha 1) só para a área receber cliques do mouse -->
+    <Grid x:Name="Root" Background="#01000000"
+          MouseLeftButtonDown="Root_MouseLeftButtonDown">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44" />
+            <RowDefinition x:Name="SecondRow" Height="44" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition x:Name="SecondColumn" Width="0" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem x:Name="LockItem" Header="Bloquear posição" Click="LockItem_Click" />
+                <MenuItem StaysOpenOnClick="True">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="OpacityLabel" Text="Transparência: 100%" Width="120" VerticalAlignment="Center" />
+                            <Slider x:Name="OpacitySlider" Width="110" Minimum="20" Maximum="100"
+                                    IsSnapToTickEnabled="True" TickFrequency="1"
+                                    VerticalAlignment="Center"
+                                    ValueChanged="OpacitySlider_ValueChanged" />
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Header="Orientação">
+                    <MenuItem x:Name="VerticalItem" Header="Vertical (empilhadas)" IsCheckable="True" Click="Orientation_Click" Tag="V" />
+                    <MenuItem x:Name="HorizontalItem" Header="Horizontal (lado a lado)" IsCheckable="True" Click="Orientation_Click" Tag="H" />
+                </MenuItem>
+                <MenuItem Header="Minimizar para a bandeja" Click="TrayItem_Click" />
+                <Separator />
+                <MenuItem Header="Sair" Click="ExitItem_Click" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+
+        <local:TempGauge x:Name="CpuGauge" Grid.Row="0" />
+        <local:TempGauge x:Name="GpuGauge" Grid.Row="1" />
+    </Grid>
+</Window>
