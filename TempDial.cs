@@ -5,7 +5,7 @@ using System.Windows.Shapes;
 
 namespace TempBar;
 
-/// <summary>Velocímetro: semicírculo com degradê verde → azul → vermelho e ponteiro animado.</summary>
+/// <summary>Velocímetro: semicírculo com degradê verde → azul → roxo → vermelho e ponteiro animado.</summary>
 public class TempDial : UserControl, ITempView
 {
     public const double CellWidth = 112, CellHeight = 72;

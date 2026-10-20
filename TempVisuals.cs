@@ -26,17 +26,26 @@ public interface ITempView
 /// <summary>Cores e ajudantes compartilhados pelos indicadores.</summary>
 public static class TempVisuals
 {
-    private static readonly Color Cool = (Color)ColorConverter.ConvertFromString("#2ECC71");   // verde
-    private static readonly Color Mid = (Color)ColorConverter.ConvertFromString("#3498DB");    // azul
-    private static readonly Color Hot = (Color)ColorConverter.ConvertFromString("#E74C3C");    // vermelho
+    // Paradas do degradê. O roxo entre azul e vermelho evita o cinza que uma mistura direta de RGB produz.
+    private static readonly (double At, Color Color)[] Stops =
+    {
+        (0.00, (Color)ColorConverter.ConvertFromString("#2ECC71")),   // verde
+        (0.50, (Color)ColorConverter.ConvertFromString("#3498DB")),   // azul
+        (0.75, (Color)ColorConverter.ConvertFromString("#9B59B6")),   // roxo
+        (1.00, (Color)ColorConverter.ConvertFromString("#E74C3C"))    // vermelho
+    };
 
-    /// <summary>Cor do degradê verde → azul → vermelho para uma fração de 0 a 1.</summary>
+    /// <summary>Cor do degradê verde → azul → roxo → vermelho para uma fração de 0 a 1.</summary>
     public static Color ColorAt(double fraction)
     {
         fraction = Math.Clamp(fraction, 0, 1);
-        return fraction < 0.5
-            ? Lerp(Cool, Mid, fraction * 2)
-            : Lerp(Mid, Hot, (fraction - 0.5) * 2);
+        for (int i = 1; i < Stops.Length; i++)
+        {
+            if (fraction <= Stops[i].At)
+                return Lerp(Stops[i - 1].Color, Stops[i].Color,
+                    (fraction - Stops[i - 1].At) / (Stops[i].At - Stops[i - 1].At));
+        }
+        return Stops[^1].Color;
     }
 
     public static double Fraction(double? temp, double min, double max)

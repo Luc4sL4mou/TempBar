@@ -6,7 +6,7 @@ using System.Windows.Shapes;
 
 namespace TempBar;
 
-/// <summary>Círculo com o valor no centro; a cor segue o degradê verde → azul → vermelho da temperatura.</summary>
+/// <summary>Círculo com o valor no centro; a cor segue o degradê verde → azul → roxo → vermelho da temperatura.</summary>
 public class TempCircle : UserControl, ITempView
 {
     public const double CellWidth = 66, CellHeight = 66;

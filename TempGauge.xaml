@@ -34,12 +34,13 @@
                 <RowDefinition Height="14" />
             </Grid.RowDefinitions>
 
-            <!-- Barra com gradiente verde -> azul -> vermelho -->
+            <!-- Barra com gradiente verde -> azul -> roxo -> vermelho -->
             <Border Grid.Row="1" CornerRadius="5">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
                         <GradientStop Color="#2ECC71" Offset="0" />
                         <GradientStop Color="#3498DB" Offset="0.5" />
+                        <GradientStop Color="#9B59B6" Offset="0.75" />
                         <GradientStop Color="#E74C3C" Offset="1" />
                     </LinearGradientBrush>
                 </Border.Background>

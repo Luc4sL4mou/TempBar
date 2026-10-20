@@ -18,7 +18,7 @@ Duas barras minimalistas que mostram a temperatura da **CPU** e da **GPU** sempr
 
 ## Recursos
 
-- Barra de gradiente (verde → azul → vermelho) com um marcador animado que acompanha a temperatura.
+- Barra de gradiente (verde → azul → roxo → vermelho) com um marcador animado que acompanha a temperatura.
 - Mínimo e máximo da escala nas pontas e o valor atual em °C acima do marcador.
 - **Três layouts**: **barra**, **velocímetro** (semicírculo com degradê e ponteiro animado) e **círculo** (valor no centro, cor em degradê conforme a temperatura).
 - Um indicador para CPU e outro para GPU, **empilhados** ou **lado a lado**, em qualquer layout.
