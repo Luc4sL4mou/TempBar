@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>   <!-- só para o NotifyIcon (bandeja) -->
     <ApplicationIcon>Assets\TempBar.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Product>TempBar</Product>
     <Description>Barras de temperatura de CPU e GPU sempre visíveis na tela</Description>
     <Nullable>enable</Nullable>

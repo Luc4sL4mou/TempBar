@@ -5,8 +5,10 @@ using System.Windows.Media.Animation;
 namespace TempBar;
 
 /// <summary>Uma barra de temperatura: rótulo, mínimo, máximo, apontador e valor atual.</summary>
-public partial class TempGauge : UserControl
+public partial class TempGauge : UserControl, ITempView
 {
+    public const double CellWidth = 200, CellHeight = 44;
+
     private const double ValueTextHalfWidth = 20;   // metade da largura do ValueText no XAML
 
     private double _min = 30;

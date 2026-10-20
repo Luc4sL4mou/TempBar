@@ -10,6 +10,7 @@ public class Settings
     public double? Top { get; set; }
     public bool Locked { get; set; }
     public bool SideBySide { get; set; }                 // false = empilhadas, true = lado a lado
+    public LayoutStyle Layout { get; set; } = LayoutStyle.Bar;   // barra, velocímetro ou círculo
     public double OpacityPercent { get; set; } = 100;   // 20..100
     public double MinTemp { get; set; } = 30;     // extremo esquerdo da barra
     public double MaxTemp { get; set; } = 90;     // extremo direito da barra

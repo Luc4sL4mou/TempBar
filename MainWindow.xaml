@@ -15,11 +15,11 @@
           MouseLeftButtonDown="Root_MouseLeftButtonDown">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="44" />
+            <RowDefinition x:Name="FirstRow" Height="44" />
             <RowDefinition x:Name="SecondRow" Height="44" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition x:Name="FirstColumn" Width="200" />
             <ColumnDefinition x:Name="SecondColumn" Width="0" />
         </Grid.ColumnDefinitions>
 
@@ -37,17 +37,22 @@
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
+                <MenuItem Header="Layout">
+                    <MenuItem x:Name="BarItem" Header="Barra" IsCheckable="True" Click="Layout_Click" Tag="Bar" />
+                    <MenuItem x:Name="DialItem" Header="Velocímetro" IsCheckable="True" Click="Layout_Click" Tag="Dial" />
+                    <MenuItem x:Name="CircleItem" Header="Círculo" IsCheckable="True" Click="Layout_Click" Tag="Circle" />
+                </MenuItem>
                 <MenuItem Header="Orientação">
                     <MenuItem x:Name="VerticalItem" Header="Vertical (empilhadas)" IsCheckable="True" Click="Orientation_Click" Tag="V" />
                     <MenuItem x:Name="HorizontalItem" Header="Horizontal (lado a lado)" IsCheckable="True" Click="Orientation_Click" Tag="H" />
                 </MenuItem>
+                <MenuItem x:Name="AutostartItem" Header="Iniciar com o Windows" IsCheckable="True" Click="AutostartItem_Click" />
                 <MenuItem Header="Minimizar para a bandeja" Click="TrayItem_Click" />
                 <Separator />
                 <MenuItem Header="Sair" Click="ExitItem_Click" />
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <local:TempGauge x:Name="CpuGauge" Grid.Row="0" />
-        <local:TempGauge x:Name="GpuGauge" Grid.Row="1" />
+        <!-- Os indicadores de CPU e GPU são criados em código, conforme o layout escolhido -->
     </Grid>
 </Window>

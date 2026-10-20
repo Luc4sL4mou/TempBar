@@ -15,6 +15,8 @@ public partial class MainWindow : Window
     private bool _reading;
     private bool _ready;   // evita que eventos disparados na inicialização sobrescrevam as configurações
     private System.Windows.Forms.NotifyIcon? _tray;
+    private UserControl? _cpuView, _gpuView;   // indicadores atuais (barra, velocímetro ou círculo)
+    private double? _lastCpu, _lastGpu;
 
     // Mantém a janela acima de tudo (barra de tarefas, jogos em tela cheia sem borda):
     // reafirmamos o Topmost sem ativar a janela, a cada troca de janela em primeiro plano
@@ -68,13 +70,14 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        // iniciado pelo Windows: sobe na última posição e bloqueado
+        if (Environment.GetCommandLineArgs().Contains(Autostart.Argument)) _settings.Locked = true;
+        AutostartItem.IsChecked = Autostart.IsEnabled();
+        if (AutostartItem.IsChecked) Autostart.Enable();   // atualiza o caminho caso o .exe tenha sido movido
+        ApplyLayout();      // define o tamanho da janela, usado por RestorePosition
         RestorePosition();
         ApplyLockState();
         ApplyOpacity();
-        ApplyOrientation();
-
-        CpuGauge.Configure("CPU", _settings.MinTemp, _settings.MaxTemp);
-        GpuGauge.Configure("GPU", _settings.MinTemp, _settings.MaxTemp);
 
         _timer.Tick += async (_, _) => await UpdateTemperatureAsync();
         _timer.Start();
@@ -91,8 +94,10 @@ public partial class MainWindow : Window
         try
         {
             var (cpu, gpu) = await Task.Run(() => (_reader.Read("CPU"), _reader.Read("GPU")));
-            CpuGauge.SetTemperature(cpu);
-            GpuGauge.SetTemperature(gpu);
+            _lastCpu = cpu;
+            _lastGpu = gpu;
+            (_cpuView as ITempView)?.SetTemperature(cpu);
+            (_gpuView as ITempView)?.SetTemperature(gpu);
         }
         finally
         {
@@ -126,11 +131,37 @@ public partial class MainWindow : Window
         _settings.Save();
     }
 
+    private void Layout_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.Layout = Enum.Parse<LayoutStyle>((string)((MenuItem)sender).Tag);
+        ApplyLayout();
+        _settings.Save();
+    }
+
     private void Orientation_Click(object sender, RoutedEventArgs e)
     {
         _settings.SideBySide = (string)((MenuItem)sender).Tag == "H";
         ApplyOrientation();
         _settings.Save();
+    }
+
+    private void AutostartItem_Click(object sender, RoutedEventArgs e)
+    {
+        bool want = AutostartItem.IsChecked;
+        if (want)
+        {
+            // iniciar com o Windows sempre começa na última posição, bloqueada
+            _settings.Locked = true;
+            ApplyLockState();
+            SavePosition();
+        }
+        bool ok = want ? Autostart.Enable() : Autostart.Disable();
+        if (!ok)
+        {
+            AutostartItem.IsChecked = !want;
+            MessageBox.Show("Não foi possível alterar o início automático com o Windows.", "TempBar",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private void TrayItem_Click(object sender, RoutedEventArgs e) => MinimizeToTray();
@@ -143,19 +174,61 @@ public partial class MainWindow : Window
         Root.Cursor = _settings.Locked ? Cursors.Arrow : Cursors.SizeAll;
     }
 
+    private (double Width, double Height) CellSize() => _settings.Layout switch
+    {
+        LayoutStyle.Dial => (TempDial.CellWidth, TempDial.CellHeight),
+        LayoutStyle.Circle => (TempCircle.CellWidth, TempCircle.CellHeight),
+        _ => (TempGauge.CellWidth, TempGauge.CellHeight)
+    };
+
+    private UserControl CreateView() => _settings.Layout switch
+    {
+        LayoutStyle.Dial => new TempDial(),
+        LayoutStyle.Circle => new TempCircle(),
+        _ => new TempGauge()
+    };
+
+    /// <summary>Recria os indicadores de CPU e GPU no estilo escolhido e reaplica a orientação.</summary>
+    private void ApplyLayout()
+    {
+        BarItem.IsChecked = _settings.Layout == LayoutStyle.Bar;
+        DialItem.IsChecked = _settings.Layout == LayoutStyle.Dial;
+        CircleItem.IsChecked = _settings.Layout == LayoutStyle.Circle;
+
+        if (_cpuView != null) Root.Children.Remove(_cpuView);
+        if (_gpuView != null) Root.Children.Remove(_gpuView);
+
+        _cpuView = CreateView();
+        _gpuView = CreateView();
+        ((ITempView)_cpuView).Configure("CPU", _settings.MinTemp, _settings.MaxTemp);
+        ((ITempView)_gpuView).Configure("GPU", _settings.MinTemp, _settings.MaxTemp);
+        ((ITempView)_cpuView).SetTemperature(_lastCpu);
+        ((ITempView)_gpuView).SetTemperature(_lastGpu);
+        Root.Children.Add(_cpuView);
+        Root.Children.Add(_gpuView);
+
+        ApplyOrientation();
+    }
+
     private void ApplyOrientation()
     {
         bool side = _settings.SideBySide;
         VerticalItem.IsChecked = !side;
         HorizontalItem.IsChecked = side;
 
-        SecondRow.Height = new GridLength(side ? 0 : 44);
-        SecondColumn.Width = new GridLength(side ? 200 : 0);
-        Grid.SetRow(GpuGauge, side ? 0 : 1);
-        Grid.SetColumn(GpuGauge, side ? 1 : 0);
+        var (w, h) = CellSize();
+        FirstRow.Height = new GridLength(h);
+        FirstColumn.Width = new GridLength(w);
+        SecondRow.Height = new GridLength(side ? 0 : h);
+        SecondColumn.Width = new GridLength(side ? w : 0);
 
-        Width = side ? 400 : 200;
-        Height = side ? 44 : 88;
+        Grid.SetRow(_cpuView!, 0);
+        Grid.SetColumn(_cpuView!, 0);
+        Grid.SetRow(_gpuView!, side ? 0 : 1);
+        Grid.SetColumn(_gpuView!, side ? 1 : 0);
+
+        Width = side ? w * 2 : w;
+        Height = side ? h : h * 2;
     }
 
     private void ApplyOpacity()

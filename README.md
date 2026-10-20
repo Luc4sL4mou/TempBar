@@ -14,7 +14,8 @@ Duas barras minimalistas que mostram a temperatura da **CPU** e da **GPU** sempr
 
 - Barra de gradiente (verde → azul → vermelho) com um marcador animado que acompanha a temperatura.
 - Mínimo e máximo da escala nas pontas e o valor atual em °C acima do marcador.
-- Uma barra para CPU e outra para GPU, **empilhadas** ou **lado a lado**.
+- **Três layouts**: **barra**, **velocímetro** (semicírculo com degradê e ponteiro animado) e **círculo** (valor no centro, cor em degradê conforme a temperatura).
+- Um indicador para CPU e outro para GPU, **empilhados** ou **lado a lado**, em qualquer layout.
 - Janela sem borda, sempre no topo (inclusive sobre a barra de tarefas), arrastável e com opção de **bloquear a posição**.
 - **Transparência ajustável** de 20% a 100% (nunca some por completo).
 - **Minimizar para a bandeja** do sistema.
@@ -25,6 +26,8 @@ Tudo é controlado pelo menu do botão direito:
 | Opção | O que faz |
 |---|---|
 | Bloquear / Desbloquear posição | Impede (ou permite) arrastar a barra |
+| Layout | Barra, Velocímetro ou Círculo |
+| Iniciar com o Windows | Liga/desliga o início automático (na última posição, bloqueada) |
 | Transparência | Controle deslizante de 20% a 100% |
 | Orientação | Vertical (empilhadas) ou horizontal (lado a lado) |
 | Minimizar para a bandeja | Esconde a barra e deixa um ícone na bandeja |
@@ -92,6 +95,8 @@ dotnet publish -c Release -r win-x64 --self-contained `
 |---|---|
 | `TemperatureReader.cs` | Lê CPU/GPU pela LibreHardwareMonitor e escolhe o sensor mais representativo |
 | `TempGauge.xaml(.cs)` | Controle de uma barra: gradiente, rótulos, marcador animado |
+| `TempDial.cs` / `TempCircle.cs` | Indicadores em velocímetro e em círculo |
+| `TempVisuals.cs` | Interface comum, enum de layouts e cores do degradê |
 | `MainWindow.xaml(.cs)` | Janela sem borda, menu, orientação, transparência, bandeja, manter no topo |
 | `Settings.cs` | Persistência das preferências em `%AppData%` |
 
