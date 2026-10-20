@@ -10,6 +10,12 @@ Duas barras minimalistas que mostram a temperatura da **CPU** e da **GPU** sempr
   <img src="docs/demo.gif" alt="TempBar em funcionamento: o marcador da CPU sobe sob carga">
 </p>
 
+### Layouts: velocímetro e círculo
+
+<p align="center">
+  <img src="docs/demo-layouts.gif" alt="Layouts velocímetro e círculo, com CPU e GPU, reagindo à temperatura">
+</p>
+
 ## Recursos
 
 - Barra de gradiente (verde → azul → vermelho) com um marcador animado que acompanha a temperatura.
